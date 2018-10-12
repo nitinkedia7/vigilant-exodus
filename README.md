@@ -20,6 +20,10 @@ Suppose a loved one is out of contact and possibly amidst a disaster. Friends an
 
 2. Shelter Organisers: An inventory management system, tracking evacuees ensures that resources get there where it is needed the most. Data from every center is openly visible to other centers and people. Thus different centers can coordinate their resources and rescue attempts.
 
+### Additional Feature:
+
+1. We are also thinking of using Sentiment Analysis in our project. Using sentiment analysis on social media posts, we will be able to recognise those people who are more inclined to help the victims and then we will use our message services to ask them to donate and help the victims. Using sentiment analysis on the social media posts of refugees in a shelter, we will be able to estimate condition of the shelter and volunteers can be asked to help those shelters.
+
 ### Technologies to be used:
 
 * Django

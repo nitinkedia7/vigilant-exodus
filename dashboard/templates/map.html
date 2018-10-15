@@ -44,46 +44,7 @@ limitations under the License.
 <head>
 <body>
 
-  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
-  <div class="mdl-layout__drawer">
-    <span class="mdl-layout-title">{{ title }}</span>
-    <nav class="mdl-navigation">
-
-        <label>Min bedrooms: <span id="min-bedrooms-text">{{ bedrooms_range.0 }}</span></label>
-        <input class="mdl-slider mdl-js-slider" id="min-bedrooms" type="range"
-            min="{{ bedrooms_range.0 }}" max="{{ bedrooms_range.1 }}" value="{{ bedrooms_range.0 }}">
-        <label>Max bedrooms: <span id="max-bedrooms-text">{{ bedrooms_range.1 }}</span></label>
-        <input class="mdl-slider mdl-js-slider" id="max-bedrooms" type="range"
-            min="{{ bedrooms_range.0 }}" max="{{ bedrooms_range.1 }}" value="{{ bedrooms_range.1 }}">
-        <label>Min bathrooms: <span id="min-bathrooms-text">{{ bathrooms_range.0 }}</span></label>
-        <input class="mdl-slider mdl-js-slider" id="min-bathrooms" type="range"
-            min="{{ bathrooms_range.0 }}" max="{{ bathrooms_range.1 }}" value="{{ bathrooms_range.0 }}">
-        <label>Min car spaces: <span id="min-car-spaces-text">{{ car_spaces_range.0 }}</span></label>
-        <input class="mdl-slider mdl-js-slider" id="min-car-spaces" type="range"
-            min="{{ car_spaces_range.0 }}" max="{{ car_spaces_range.1 }}" value="{{ car_spaces_range.0 }}">
-        <label>School within: <span id="nearest-school-text">Any</span></label>
-        <input class="mdl-slider mdl-js-slider" id="nearest-school" type="range"
-            min="{{ distance_range.0 }}" max="{{ distance_range.1 }}" value="{{ distance_range.0 }}">
-        <label>Train station within: <span id="nearest-train-station-text">Any</span></label>
-        <input class="mdl-slider mdl-js-slider" id="nearest-train-station" type="range"
-            min="{{ distance_range.0 }}" max="{{ distance_range.1 }}" value="{{ distance_range.0 }}">
-
-        <div id="property-types">
-        {% for type in property_types %}
-        <label class="property-type mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" for="checkbox-{{ type.0 }}">
-          <input name="property-types" type="checkbox" id="checkbox-{{ type.0 }}" class="mdl-checkbox__input" value="{{ type.0 }}" checked>
-          <span class="mdl-checkbox__label">{{ type.1 }}</span>
-        </label>
-        {% endfor %}
-        </div>
-
-        <div id="info">
-            <p>Total properties: <span id="total-text">0</span>
-            <div class="mdl-spinner mdl-js-spinner is-active"></div>
-        </div>
-
-    </nav>
-  </div>
+  <div class="mdl-layout mdl-js-layout">
   <main class="mdl-layout__content">
     <div class="page-content" id="map"></div>
   </main>

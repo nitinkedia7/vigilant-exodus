@@ -6,8 +6,10 @@ from django.conf import settings
 from django.db import connection
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 
-from .models import Camp
+from .models import Camp, Hazard
+import json
 
 def camps_geojson(request):
     """
@@ -24,6 +26,53 @@ def camps_geojson(request):
 
     return HttpResponse(json, content_type="application/json")
 
+def hazards_geojson(request):
+    """
+    Retrieves properties given the querystring params, and 
+    returns them as GeoJSON.
+    """
+    ne = request.GET["ne"].split(",")
+    sw = request.GET["sw"].split(",")
+    lookup = {
+        "point__contained": Polygon.from_bbox((sw[1], sw[0], ne[1], ne[0])),
+    }
+    properties = Hazard.objects.filter(**lookup)
+    json = serialize("geojson", properties, geometry_field="point")
+
+    return HttpResponse(json, content_type="application/json")
+
+@csrf_exempt
+def add_hazard_area(request):
+
+    # Get the post variables
+    # print(request.body)
+    # latLng = request.POST.get('latLng').split(',')
+    
+    latLng = json.loads(request.body.decode('utf-8'))
+    print(latLng)
+    # You may want to validate data here
+
+    # Create the game object
+    try:
+        hazard = Hazard.objects.create()
+        hazard.set_hazard_location(latlng = latLng)
+        hazard.save()
+
+        # Setting output
+        response = {
+            'status': 1,
+            'message': 'Game saved'
+        }
+        print('done')
+    except Exception as e:
+        print(e)
+        # Something went wrong
+        response = {
+            'status': 0,
+            'message': 'Something went wrong - ' +str(e) 
+        }
+
+    return HttpResponse(json.dumps(response), content_type="application/json")
 
 def camps_map(request):
     """
@@ -39,7 +88,8 @@ def camps_map(request):
         center = dict(zip(("lng", "lat"), GEOSGeometry(cursor.fetchone()[0]).get_coords()))
     else:
         # Default, when no properties exist.
-        center = {"lat": -33.864869, "lng": 151.1959212}
+        center = {"lat":37.782551, "lng": -122.445368}
+        # center = {"lat": -33.864869, "lng": 151.1959212}
 
     context = {
         "center": json.dumps(center),

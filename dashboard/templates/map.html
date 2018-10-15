@@ -33,6 +33,8 @@ limitations under the License.
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
   <script>
     window.propertiesGeoJsonUrl = '{% url "camps_geojson" %}';
+    window.hazardsGeoJsonUrl = '{% url "hazards_geojson" %}';
+    window.addHazardUrl = '{% url "add_hazard_area" %}';
     window.apiKey = '{{ api_key }}';
     window.mapCenter = {{ center|safe }};
     window.imagePath = '{% static "img/" %}';
@@ -40,7 +42,7 @@ limitations under the License.
   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
   <script src="https://googlemaps.github.io/js-marker-clusterer/src/markerclusterer.js"></script>
   <script src="{% static "js/app.js" %}?{% now 'u' %}"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap"></script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=visualization&callback=initMap"></script>
 <head>
 <body>
 

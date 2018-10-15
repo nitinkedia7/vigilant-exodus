@@ -39,3 +39,13 @@ class Camp(geomodels.Model):
                 raise Exception("Unable to resolve the address: '%s'" % address)
             latlng = data[0]["geometry"]["location"]
         self.point = GEOSGeometry("POINT(%(lng)s %(lat)s)" % latlng)
+
+class Hazard(geomodels.Model):
+    disaster = models.ForeignKey(Disaster, null=True, blank=True, on_delete=models.PROTECT)
+    point = geomodels.PointField(srid=4326, null=True, unique=True)
+
+    def set_hazard_location(self, latlng):
+        if latlng:
+            self.point = GEOSGeometry("POINT(%(lng)s %(lat)s)" % latlng)
+        else:
+            raise Exception("latling is NULL")

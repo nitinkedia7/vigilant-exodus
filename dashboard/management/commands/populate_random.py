@@ -1,17 +1,3 @@
-#  Copyright 2017 Google Inc.
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#       http://www.apache.org/licenses/LICENSE-2.0
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-
 import random
 
 from django.conf import settings
@@ -27,17 +13,16 @@ class Command(BaseCommand):
     """
 
     def add_arguments(self, parser):
-        parser.add_argument("--num", action="store", dest="num", default=10, type=int,
+        parser.add_argument("--num", action="store", dest="num", default=50, type=int,
             help="Number of records to add - note that each record will use Google's reverse "
                  "geocoding API and Places API, counting towards up to 3 requests per record "
                  "against your daily quota.")
-        parser.add_argument("--center", action="store", dest="center", default="-33.864869,151.1959212",
+        parser.add_argument("--center", action="store", dest="center", default="37.772544,-122.4228374",
             help="Center of area where locations will be randomly drawn from, eg: --center %(default)s")
         parser.add_argument("--delete", action="store_true", dest="delete",
             help="Delete existing records before populating.")
 
     def handle(self, **options):
-    
         client = googlemaps.Client(key=settings.GOOGLE_MAPS_API_SERVER_KEY)
         properties = []
         start_lat, start_lng = map(float, options["center"].split(","))
@@ -59,7 +44,7 @@ class Command(BaseCommand):
                 print("Error: %s" % e)
                 continue
             # Resolved addresses aren't always postal addresses - they could represent a landmark
-            # or area of some sort. Sticking with addresses that being with a digit works 
+            # or area of some sort. Sticking with addresses that begin with a digit works 
             # reasonably well.
             if not address[0].isdigit():
                 print("Skipping non-postal address: %s" % address)
@@ -69,18 +54,12 @@ class Command(BaseCommand):
                 print("Skipping duplicate address: %s" % address)
                 continue
             seen.add(address)
-            property = Camp(address=address)
+            property = Camp(place_id = result["place_id"],
+                        address = result["formatted_address"])
             property.set_google_maps_fields(latlng=latlng)
             # # Set a random value for each of the range fields.
-            # for field in ("bedrooms", "bathrooms", "car_spaces", "property_type"):
-            #     setattr(property, field, random.choice(Camp._meta.get_field(field).choices)[0])
-            property.description = """
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut 
-labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco 
-laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in 
-voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat 
-non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-"""
+            for field in ("capacity", "food", "medicine", "water"):
+                setattr(property, field, random.uniform(0, 1001))
             properties.append(property)
             print("Resolved %s" % address)
         

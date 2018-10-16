@@ -15,15 +15,16 @@ class Camp(geomodels.Model):
     class Meta:
         verbose_name_plural = "Relief Camps"
 
-    address = geomodels.CharField(max_length=200)
-    description = geomodels.TextField()
+    address = geomodels.CharField(max_length=256)
+    description = geomodels.TextField(null=True, blank=True, default="We provide food, shelter and protection. All are welcome.")
     disaster = models.ForeignKey(Disaster, null=True, blank=True, on_delete=models.PROTECT)
     capacity = geomodels.IntegerField(null=True, default=1000)
     food = geomodels.IntegerField(null=True, default=1000)
     water = geomodels.IntegerField(null=True, default=1000)
     medicine = geomodels.IntegerField(null=True, default=1000)
+    place_id = geomodels.CharField(max_length=256, unique=True)
     point = geomodels.PointField(srid=4326, null=True, unique=True)
-    
+
     def __str__(self):
         return self.address
         

@@ -93,7 +93,7 @@ def camps_map(request):
 
     context = {
         "center": json.dumps(center),
-        "title": "Camp Finder",
+        "title": "Vigilant Exodus",
         "api_key": settings.GOOGLE_MAPS_API_WEB_KEY,
         "distance_range": (1, 21),
     }

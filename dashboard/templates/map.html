@@ -17,17 +17,50 @@ limitations under the License.
 -->
 {% load static %}
 <html>
+
 <head>
   <title>{{ title }}</title>
   <style>
-    #map {height: 100%;}
-    .map-loading {opacity: .3;}
-    html, body {height: 100%; margin: 0; padding: 0;}
-    label {margin: 10px 0 0 25px;}
-    #property-types {margin: 25px 0 0 25px;}
-    #info {margin: 50px auto; text-align: center;}
-    .gm-style-iw h2 {font-size: 20px; width: 400px; line-height: 1.5;}
-    .gm-style-iw img {float:right; width: 200px; height: 200px; margin: 0 10px 10px 0;}
+    #map {
+      height: 100%;
+    }
+
+    .map-loading {
+      opacity: .3;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    label {
+      margin: 10px 0 0 25px;
+    }
+
+    #property-types {
+      margin: 25px 0 0 25px;
+    }
+
+    #info {
+      margin: 50px auto;
+      text-align: center;
+    }
+
+    .gm-style-iw h2 {
+      font-size: 20px;
+      width: 400px;
+      line-height: 1.5;
+    }
+
+    .gm-style-iw img {
+      float: right;
+      width: 200px;
+      height: 200px;
+      margin: 0 10px 10px 0;
+    }
   </style>
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
@@ -36,21 +69,33 @@ limitations under the License.
     window.hazardsGeoJsonUrl = '{% url "hazards_geojson" %}';
     window.addHazardUrl = '{% url "add_hazard_area" %}';
     window.apiKey = '{{ api_key }}';
-    window.mapCenter = {{ center|safe }};
+    window.mapCenter = {{ center | safe }};
     window.imagePath = '{% static "img/" %}';
   </script>
   <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
   <script src="https://googlemaps.github.io/js-marker-clusterer/src/markerclusterer.js"></script>
   <script src="{% static "js/app.js" %}?{% now 'u' %}"></script>
-  <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=visualization&callback=initMap"></script>
-<head>
-<body>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=visualization,places&callback=initMap"></script>
 
-  <div class="mdl-layout mdl-js-layout">
-  <main class="mdl-layout__content">
-    <div class="page-content" id="map"></div>
-  </main>
-</div>
+  <head>
 
-</body>
+  <body>
+
+    <div class="mdl-layout mdl-js-layout">
+      <main class="mdl-layout__content">
+        <div class="page-content" id="map"></div>
+        <div id="infowindow-content">
+          <img id="place-img" src="">
+          <h5 id="place-address"></h2>
+          <p id="place-description"></p>
+          <li id="place-capacity"></li>
+          <li id="place-water"></li>
+          <li id="place-food"></li>
+          <li id="place-medicine"></li>
+        </div>
+      </main>
+    </div>
+
+  </body>
+
 </html>

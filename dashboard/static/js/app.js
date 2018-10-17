@@ -159,8 +159,11 @@ function initMap() {
     this.marker = marker;
     this.feature = feature;
     this.directionsService = new google.maps.DirectionsService;
-    this.directionsDisplay = new google.maps.DirectionsRenderer;
-    this.directionsDisplay.setMap(map);
+    this.directionsDisplay = new google.maps.DirectionsRenderer({
+      draggable: true,
+      map: map,
+      panel: document.getElementById('right-panel')
+    });
     this.placesService = new google.maps.places.PlacesService(map);
     campwindow = new google.maps.InfoWindow;
     this.infowindowContent = document.getElementById('infowindow-content');
@@ -253,7 +256,7 @@ function initMap() {
 
   function saveData() {
     var name = escape(document.getElementById('name').value);
-    var address = escape(document.getElementById('description').value);
+    var description = escape(document.getElementById('description').value);
     var type = document.getElementById('type').value;
     var latLng = addmarker.getPosition();
     if (type == "hazard") {
@@ -281,10 +284,12 @@ function initMap() {
         headers: {
           "content-type": "application/json; charset=UTF-8"
         },
-        body: JSON.stringify(latLng.toJSON()),
+        body: JSON.stringify({
+          "name" : name,
+          "latLng" : latLng.toJSON(),
+        }),
         method: "POST"
       };
-      console.log("Hi1");
       fetch(window.addPersonUrl, param)
         .then(res => res.json())
         .then(response => {

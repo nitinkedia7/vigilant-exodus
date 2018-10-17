@@ -84,11 +84,11 @@ def add_hazard_area(request):
 @csrf_exempt
 def add_rescue_area(request):
     # Get the post variables
-    latLng = json.loads(request.body.decode('utf-8'))
+    response = json.loads(request.body.decode('utf-8'))
     # Create the game object
     try:
-        person = Person.objects.create(name="Robin Hood")
-        person.set_location(latlng = latLng)
+        person = Person.objects.create(name=response['name'])
+        person.set_location(latlng = response['latLng'])
         person.save()
         # Setting output
         response = {

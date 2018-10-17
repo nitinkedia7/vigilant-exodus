@@ -132,7 +132,7 @@ const mapStyle = [
   //   }]
   // }
 ];
-
+var hazards, formwindow, messagewindow;
 
 function initMap() {
 
@@ -164,7 +164,7 @@ function initMap() {
   //   // Browser doesn't support Geolocation
   //   handleLocationError(false, infoWindow, map.getCenter());
   // }
-var hazards = new google.maps.MVCArray();
+hazards = new google.maps.MVCArray();
 getPoints(hazards);
 const heatmap = new google.maps.visualization.HeatmapLayer({
   data: hazards, //getPoints(),
@@ -192,7 +192,7 @@ let timeoutHandler = 0;
 // on it, each time the property data is received after map.data.loadGeoJson
 // being called.
 let markerCluster = null;
-
+let pmarkerCluster = null;
 // Stores the bounds used for retrieving data, so that when the bounds_changed 
 // event is triggered, we don't request new data if the new bounds fall within 
 // dataBounds, for example when zooming in.
@@ -231,7 +231,8 @@ function loadProperties() {
     // const types = document.querySelectorAll('input[name="property-types"]:checked');
     // params['property-types'] = Array.prototype.map.call(types, (item) => item.value).join(',');
     const url = window.propertiesGeoJsonUrl + '?' + Object.keys(params).map((k) => k + '=' + params[k]).join('&');
-
+    const purl = window.peopleGeoJsonUrl + '?' + Object.keys(params).map((k) => k + '=' + params[k]).join('&');
+    
     map.data.loadGeoJson(url, null, (features) => {
 
       // Set the value in the "Total properties: x" text.
@@ -267,6 +268,40 @@ function loadProperties() {
         }))
       });
     });
+
+    map.data.loadGeoJson(purl, null, (features) => {
+
+      // Set the value in the "Total properties: x" text.
+      // document.querySelector('#total-text').innerHTML = features.length;
+      // Hide the loading spinner.
+      // spinner.classList.remove('is-active');
+      // Clear the previous marker cluster.
+      if (pmarkerCluster !== null) {
+        pmarkerCluster.clearMarkers();
+      }
+
+      // Build an array of markers, one per property.
+      const markers = features.map((feature) => {
+
+        const marker = new google.maps.Marker({
+          position: feature.getGeometry().get(0),
+          icon: window.imagePath + 'ic_place_yellow.png'
+        });
+        return marker;
+      });
+
+      // Build the marker clusterer.
+      pmarkerCluster = new MarkerClusterer(map, markers, {
+        styles: [1, 2, 3].map(i => ({
+          url: window.imagePath + `cluster${i}.png`,
+          width: 24 + (24 * i),
+          height: 24 + (24 * i),
+          textColor: '#fff',
+          textSize: 12 + (4 * i)
+        }))
+      });
+    });
+
     const url1 = window.hazardsGeoJsonUrl + '?' + Object.keys(params).map((k) => k + '=' + params[k]).join('&');
 
     map.data.loadGeoJson(url1, null, (features) => {
@@ -281,10 +316,11 @@ function loadProperties() {
     });
   }, 100);
 
-  map.addListener('dblclick', function (e) {
+  map.addListener('click', function (e) {
     placeMarkerAndPanTo(e.latLng, map, hazards);
   });
 }
+
 /**
  * @constructor
  */
@@ -318,9 +354,7 @@ ClickEventHandler.prototype.handleClick = function (event) {
   event.stop();
   this.calculateAndDisplayRoute(event.latLng);
   this.getPlaceInformation();
-  // this.calculateAndDisplayRoute(event.placeId);
-  // this.getPlaceInformation(event.placeId);
-  // }
+
 };
 
 ClickEventHandler.prototype.calculateAndDisplayRoute = function (latLng) {
@@ -382,29 +416,75 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 function placeMarkerAndPanTo(latLng, map, hazards) {
-  const url = window.addHazardUrl + '?' + ('latlng' + '=' + latLng.toUrlValue())
+  var marker = new google.maps.Marker({
+    position: latLng,
+    map: map
+  });
+  map.panTo(latLng);
+  
+  formwindow = new google.maps.InfoWindow({
+    content: document.getElementById('form')
+  });
 
-  const param = {
-    headers: {
-      "content-type": "application/json; charset=UTF-8"
-    },
-    body: JSON.stringify(latLng.toJSON()),
-    // {
-    //   latLng : latLng.toUrlValue(), 
-    // },
-    method: "POST"
-  };
-  fetch(window.addHazardUrl, param)
-    .then(res => res.json())
-    .then(response => console.log('Success:', JSON.stringify(response)))
-    .catch(error => console.error('Error:', error));
+  messagewindow = new google.maps.InfoWindow({
+    content: document.getElementById('message')
+  });
 
-  hazards.push(latLng);
-  // var marker = new google.maps.Marker({
-  //   position: latLng,
-  //   map: map
-  // });
-  // map.panTo(latLng);
+  google.maps.event.addListener(formwindow, 'domready', function() {
+    // document.getElementById("form-button").onclick = saveData(marker);
+    document.getElementById("form-button").addEventListener("click", function(e) {
+        // e.stop();
+        // console.log("hi!");
+        saveData(marker);
+    });
+  });
+  formwindow.open(map, marker);
+}
+
+function saveData(marker) {
+  console.log("hi!");
+  var name = escape(document.getElementById('name').value);
+  var address = escape(document.getElementById('description').value);
+  var type = document.getElementById('type').value;
+  var latLng = marker.getPosition();
+  if (type == "hazard") {
+    console.log(latLng.lat())
+    var param = {
+      headers: {
+        "content-type": "application/json; charset=UTF-8"
+      },
+      body: JSON.stringify(latLng.toJSON()),
+      method: "POST"
+    };
+    console.log("Hi1");
+    fetch(window.addHazardUrl, param)
+      .then(res => res.json())
+      .then(response => {
+        formwindow.close();
+        marker.setMap(null);
+        messagewindow.open(map, marker);
+        console.log('Success:', JSON.stringify(response))})
+      .catch(error => console.error('Error:', error));
+
+    hazards.push(latLng);
+  } else if (type == "need-rescue") {
+    var param = {
+      headers: {
+        "content-type": "application/json; charset=UTF-8"
+      },
+      body: JSON.stringify(latLng.toJSON()),
+      method: "POST"
+    };
+    console.log("Hi1");
+    fetch(window.addPersonUrl, param)
+      .then(res => res.json())
+      .then(response => {
+        formwindow.close();
+        marker.setMap(null);
+        messagewindow.open(map, marker);
+        console.log('Success:', JSON.stringify(response))})
+      .catch(error => console.error('Error:', error));
+  }  
 }
 
 // Heatmap data: 500 Points

@@ -67,7 +67,9 @@ limitations under the License.
   <script>
     window.propertiesGeoJsonUrl = '{% url "camps_geojson" %}';
     window.hazardsGeoJsonUrl = '{% url "hazards_geojson" %}';
+    window.peopleGeoJsonUrl = '{% url "people_geojson" %}';
     window.addHazardUrl = '{% url "add_hazard_area" %}';
+    window.addPersonUrl = '{% url "add_rescue_area" %}';
     window.apiKey = '{{ api_key }}';
     window.mapCenter = {{ center | safe }};
     window.imagePath = '{% static "img/" %}';
@@ -84,6 +86,7 @@ limitations under the License.
     <div class="mdl-layout mdl-js-layout">
       <main class="mdl-layout__content">
         <div class="page-content" id="map"></div>
+        
         <div id="infowindow-content">
           <img id="place-img" src="">
           <h5 id="place-address"></h2>
@@ -93,6 +96,18 @@ limitations under the License.
           <li id="place-food"></li>
           <li id="place-medicine"></li>
         </div>
+        <div id="form">
+          <table>
+          <tr><td>Name:</td> <td><input type='text' id='name'/> </td> </tr>
+          <tr><td>Description:</td> <td><input type='text' id='description'/> </td> </tr>
+          <tr><td>Mark as:</td> <td><select id='type'> +
+                     <option value='hazard' SELECTED>Hazard</option>
+                     <option value='need-rescue'>NeedRescue</option>
+                     </select> </td></tr>
+                     <tr><td></td><td><input id="form-button" type='button' value='Save'/></td></tr>
+          </table>
+        </div>
+        <div id="message">Location saved</div>
       </main>
     </div>
 

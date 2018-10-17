@@ -50,3 +50,19 @@ class Hazard(geomodels.Model):
             self.point = GEOSGeometry("POINT(%(lng)s %(lat)s)" % latlng)
         else:
             raise Exception("latling is NULL")
+
+class Person(geomodels.Model):
+    name = models.CharField(max_length=45)
+    dob = models.DateField(null=True, blank=True)
+    phone = models.CharField(null=True, max_length=32)
+    emergencyName = models.CharField(null=True, max_length=32)
+    emergencyPhone = models.CharField(null=True, max_length=32)
+    
+    camp = models.ForeignKey(Camp, null=True, blank=True, on_delete=models.PROTECT)
+    point = geomodels.PointField(srid=4326, null=True)
+ 
+    def set_location(self, latlng):
+        if latlng:
+            self.point = GEOSGeometry("POINT(%(lng)s %(lat)s)" % latlng)
+        else:
+            raise Exception("latling is NULL")

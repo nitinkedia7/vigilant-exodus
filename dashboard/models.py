@@ -43,13 +43,15 @@ class Camp(geomodels.Model):
 
 class Hazard(geomodels.Model):
     disaster = models.ForeignKey(Disaster, null=True, blank=True, on_delete=models.PROTECT)
-    point = geomodels.PointField(srid=4326, null=True, unique=True)
+    point = geomodels.PointField(srid=4326, null=True)
+    description = geomodels.TextField(null=True, default="Compromised area, keep distance")
+    weight = geomodels.IntegerField(default=1)
 
     def set_hazard_location(self, latlng):
         if latlng:
             self.point = GEOSGeometry("POINT(%(lng)s %(lat)s)" % latlng)
         else:
-            raise Exception("latling is NULL")
+            raise Exception("latlng is NULL")
 
 class Person(geomodels.Model):
     name = models.CharField(max_length=45)
@@ -65,4 +67,4 @@ class Person(geomodels.Model):
         if latlng:
             self.point = GEOSGeometry("POINT(%(lng)s %(lat)s)" % latlng)
         else:
-            raise Exception("latling is NULL")
+            raise Exception("latlng is NULL")

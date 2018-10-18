@@ -33,18 +33,38 @@
         <li id="place-water"></li>
         <li id="place-food"></li>
         <li id="place-medicine"></li>
+    </div>
+    <div id="select-form-type">
+      <table>
+      <tr><td>Location type:</td> <td><select id='type'> +
+        <option value='hazard' SELECTED>Hazard Area</option>
+        <option value='need-rescue'>Need Rescue</option>
+        </select> </td></tr>
+        <tr><td></td><td><input id="form-button" type='button' value='Proceed'/></td></tr>
+      </table>    
     </div>   
-    <div id="form">
+    <div id="hazard-form">
         <table>
-        <tr><td>Name:</td> <td><input type='text' id='name'/> </td> </tr>
         <tr><td>Description:</td> <td><input type='text' id='description'/> </td> </tr>
-        <tr><td>Mark as:</td> <td><select id='type'> +
-                    <option value='hazard' SELECTED>Hazard</option>
-                    <option value='need-rescue'>NeedRescue</option>
-                    </select> </td></tr>
-                    <tr><td></td><td><input id="form-button" type='button' value='Save'/></td></tr>
+        <tr><td></td><td><input id="form-button" type='button' value='Save'/></td></tr>
         </table>
     </div>
+    <div id="rescue-form">
+      <table>
+      <tr><td>Name:</td> <td><input type='text' id='name' required/> </td> </tr>
+      <!-- <tr><td>Phone:</td> <td><input type='text' id='phone' required/> </td> </tr> -->
+      <tr><td>Phone:</td> <td><input type="tel" id="phone"
+                                      placeholder="0123456789"
+                                      pattern="[0-9]{10}"
+                                      required /></td> </tr>
+      <tr><td>Friend's Name:</td> <td><input type='text' id='friend-name'/> </td> </tr>
+      <!-- <tr><td>Friend's Phone:</td> <td><input type='text' id='friend-phone' /> </td> </tr> -->
+      <tr><td>Friend's Phone:</td> <td><input type="tel" id="friend-phone"
+                                      placeholder="0123456789"
+                                      pattern="[0-9]{10}" /></td> </tr>
+      <tr><td></td><td><input id="form-button" type='button' value='Save'/></td></tr>
+      </table>
+  </div>
     <div id="message">Location saved</div>
 </div>
   </body>

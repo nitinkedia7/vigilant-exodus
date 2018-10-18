@@ -6,6 +6,167 @@ function initMap() {
   const map = new google.maps.Map(document.querySelector('#map'), {
     zoom: 14,
     center: window.mapCenter,
+    styles:
+    [
+      {
+        "elementType": "geometry",
+        "stylers": [
+          {
+            "color": "#f5f5f5"
+          }
+        ]
+      },
+      {
+        "elementType": "labels.icon",
+        "stylers": [
+          {
+            "visibility": "on"
+          }
+        ]
+      },
+      {
+        "elementType": "labels.text.fill",
+        "stylers": [
+          {
+            "color": "#616161"
+          }
+        ]
+      },
+      {
+        "elementType": "labels.text.stroke",
+        "stylers": [
+          {
+            "color": "#f5f5f5"
+          }
+        ]
+      },
+      {
+        "featureType": "administrative.land_parcel",
+        "elementType": "labels.text.fill",
+        "stylers": [
+          {
+            "color": "#bdbdbd"
+          }
+        ]
+      },
+      {
+        "featureType": "poi",
+        "elementType": "geometry",
+        "stylers": [
+          {
+            "color": "#eeeeee"
+          }
+        ]
+      },
+      {
+        "featureType": "poi",
+        "elementType": "labels.text.fill",
+        "stylers": [
+          {
+            "color": "#757575"
+          }
+        ]
+      },
+      {
+        "featureType": "poi.park",
+        "elementType": "geometry",
+        "stylers": [
+          {
+            "color": "#e5e5e5"
+          }
+        ]
+      },
+      {
+        "featureType": "poi.park",
+        "elementType": "labels.text.fill",
+        "stylers": [
+          {
+            "color": "#9e9e9e"
+          }
+        ]
+      },
+      {
+        "featureType": "road",
+        "elementType": "geometry",
+        "stylers": [
+          {
+            "color": "#ffffff"
+          }
+        ]
+      },
+      {
+        "featureType": "road.arterial",
+        "elementType": "labels.text.fill",
+        "stylers": [
+          {
+            "color": "#757575"
+          }
+        ]
+      },
+      {
+        "featureType": "road.highway",
+        "elementType": "geometry",
+        "stylers": [
+          {
+            "color": "#dadada"
+          }
+        ]
+      },
+      {
+        "featureType": "road.highway",
+        "elementType": "labels.text.fill",
+        "stylers": [
+          {
+            "color": "#616161"
+          }
+        ]
+      },
+      {
+        "featureType": "road.local",
+        "elementType": "labels.text.fill",
+        "stylers": [
+          {
+            "color": "#9e9e9e"
+          }
+        ]
+      },
+      {
+        "featureType": "transit.line",
+        "elementType": "geometry",
+        "stylers": [
+          {
+            "color": "#e5e5e5"
+          }
+        ]
+      },
+      {
+        "featureType": "transit.station",
+        "elementType": "geometry",
+        "stylers": [
+          {
+            "color": "#eeeeee"
+          }
+        ]
+      },
+      {
+        "featureType": "water",
+        "elementType": "geometry",
+        "stylers": [
+          {
+            "color": "#c9c9c9"
+          }
+        ]
+      },
+      {
+        "featureType": "water",
+        "elementType": "labels.text.fill",
+        "stylers": [
+          {
+            "color": "#9e9e9e"
+          }
+        ]
+      }
+    ]
   });
   var infoWindow = new google.maps.InfoWindow;
   // Set a default origin for demonstration
@@ -143,7 +304,7 @@ function initMap() {
       map.data.loadGeoJson(hazard_url, null, (features) => {
 
         features.map((feature) => {
-          hazards.push(feature.getGeometry().get(0));
+          hazards.push({location: feature.getGeometry().get(0), weight: feature.getProperty('weight')});
         });
       });
     }, 100);
@@ -163,6 +324,10 @@ function initMap() {
       draggable: true,
       map: map,
       panel: document.getElementById('right-panel')
+    });
+    this.directionsDisplay.addListener('directions_changed', function() {
+      document.getElementById('right-panel').style.flexBasis = '25%';
+      document.getElementById('map').style.flexBasis = '74%';
     });
     this.placesService = new google.maps.places.PlacesService(map);
     campwindow = new google.maps.InfoWindow;
@@ -239,7 +404,7 @@ function initMap() {
 
     // if (formwindow != null) formwindow.close();
     addmarker.infowindow = new google.maps.InfoWindow({
-      content: document.getElementById('form')
+      content: document.getElementById('select-form-type')
     });
 
     messagewindow = new google.maps.InfoWindow({
@@ -248,56 +413,110 @@ function initMap() {
  
     google.maps.event.addListener(addmarker.infowindow, 'domready', function () {
       document.getElementById("form-button").addEventListener("click", function (e) {
-        saveData();
+        whichForm();
+        // saveData();
       });
     });
     addmarker.infowindow.open(map, addmarker);
   }
 
-  function saveData() {
-    var name = escape(document.getElementById('name').value);
-    var description = escape(document.getElementById('description').value);
+  function whichForm() {
     var type = document.getElementById('type').value;
+    if (type == 'hazard') {
+      addmarker.infowindow.close();     
+      addmarker.infowindow = new google.maps.InfoWindow({
+        content: document.getElementById('hazard-form')
+      });
+      google.maps.event.addListener(addmarker.infowindow, 'domready', function () {
+        document.getElementById("form-button").addEventListener("click", function (e) {
+          saveData('hazard');
+        });
+      });
+      addmarker.infowindow.open(map, addmarker);
+    } else if (type == "need-rescue") {
+      addmarker.infowindow.close();     
+      addmarker.infowindow = new google.maps.InfoWindow({
+        content: document.getElementById('rescue-form')
+      });
+      google.maps.event.addListener(addmarker.infowindow, 'domready', function () {
+        document.getElementById("form-button").addEventListener("click", function (e) {
+          saveData('need-rescue');
+        });
+      });
+      addmarker.infowindow.open(map, addmarker);
+    }
+  }
+
+  function saveData(type) {
     var latLng = addmarker.getPosition();
     if (type == "hazard") {
+      var description = escape(document.getElementById('description').value);
       var param = {
         headers: {
           "content-type": "application/json; charset=UTF-8"
         },
-        body: JSON.stringify(latLng.toJSON()),
+        body: JSON.stringify({
+          "data": {
+            "description": description,
+          },
+          "latlng": latLng.toJSON(),
+        }),
         method: "POST"
       };
       fetch(window.addHazardUrl, param)
         .then(res => res.json())
         .then(response => {
-          addmarker.infowindow.close();
-          addmarker.setMap(null);
-          messagewindow.open(map, addmarker);
-          console.log('Success:', JSON.stringify(response))
+          if (response['status'] == 200) {
+            addmarker.infowindow.close();
+            addmarker.setMap(null);
+            messagewindow.open(map, addmarker);
+            console.log('Success:', JSON.stringify(response))
+          }
+          else {
+            console.log('Failure:', JSON.stringify(response))
+          }
         })
         .catch(error => console.error('Error:', error));
 
       hazards.push(latLng);
 
     } else if (type == "need-rescue") {
+      var name = escape(document.getElementById('name').value);
+      var phone = escape(document.getElementById('phone').value);
+      var friendName = escape(document.getElementById('friend-name').value);
+      var friendPhone = escape(document.getElementById('friend-phone').value);
       var param = {
         headers: {
           "content-type": "application/json; charset=UTF-8"
         },
         body: JSON.stringify({
-          "name" : name,
-          "latLng" : latLng.toJSON(),
+          "data": {
+            "name" : name,
+            "phone" : phone,
+            "emergencyName" : friendName,
+            "emergencyPhone" : friendPhone,
+          },
+          "latlng" : latLng.toJSON(),
         }),
         method: "POST"
       };
       fetch(window.addPersonUrl, param)
         .then(res => res.json())
         .then(response => {
-          addmarker.infowindow.close();
-          addmarker.setLabel('P');
-          markerCluster.addMarker(addmarker);
-          messagewindow.open(map, addmarker);
-          console.log('Success:', JSON.stringify(response))
+          if (response['status'] == '200') {
+            addmarker.infowindow.close();
+            markerCluster.addMarker(new google.maps.Marker({
+              position: addmarker.getPosition(),
+              map: map,
+              label: 'P', 
+            }));
+            addmarker.setMap(null);
+            messagewindow.open(map, addmarker);
+            console.log('Success:', JSON.stringify(response))
+          }
+          else {
+            console.log('Failure:', JSON.stringify(response))
+          }
         })
         .catch(error => console.error('Error:', error));
     }

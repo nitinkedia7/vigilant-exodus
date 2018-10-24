@@ -5,8 +5,9 @@ django==2.1.2
 geographiclib==1.49
 geopy==1.17.0
 googlemaps==3.0.2
+gunicorn==19.9.0
 idna==2.7
 psycopg2-binary==2.7.5
-pytz==2018.5
+pytz==2018.6
 requests==2.20.0
 urllib3==1.24

@@ -88,5 +88,9 @@ local_settings.py
 .env
 db.sqlite3
 Pipfile
-exodus/local_settings.py
 .vscode
+
+.eslintrc.js
+node_modules/
+package-lock.json
+package.json

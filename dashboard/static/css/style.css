@@ -47,19 +47,6 @@ body {
     /* overflow: auto; */
 }
 
-#form,
-#info-window-content,
-#message {
-	flex: 1;
-}
-
-@media print {
-    #map {
-        height: 500px;
-        margin: 0;
-    }
-    #right-panel {
-        float: none;
-        width: auto;
-    }
+.ghost {
+    display: none;
 }

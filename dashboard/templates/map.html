@@ -3,7 +3,7 @@
 
 <head>
   <title>{{ title }}</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="shortcut icon" type="image/png" href="{% static "favicon/map-marker.png" %}"/>
   <link rel="stylesheet" href="{% static "css/style.css" %}">
   <script>
     window.campsGeoJsonUrl = '{% url "camps_geojson" %}';
@@ -25,6 +25,7 @@
     <div class="flexbox-container">
     <div id="map"></div>
     <div id="right-panel"></div>
+    <div class=ghost>
     <div id="infowindow-content">
         <img id="place-img" src="">
         <h5 id="place-address"></h2>
@@ -66,6 +67,7 @@
       </table>
   </div>
     <div id="message">Location saved</div>
+  </div>
 </div>
   </body>
 </html>

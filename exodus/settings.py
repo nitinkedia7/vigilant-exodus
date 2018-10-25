@@ -25,7 +25,7 @@ SECRET_KEY = 'qchcq^z0ecmrz!f(q9wkbhasvw_4wmdi0v=a!!9k!4^e$^hf6s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['vigilant-exodus-test.azurewebsites.net']
+ALLOWED_HOSTS = ['vigilant-exodus-test.azurewebsites.net', '127.0.0.1']
 
 
 # Application definition
@@ -126,4 +126,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = 'static/'
+STATIC_ROOT = '/home/site/wwwroot/dashboard/static/'

@@ -25,7 +25,7 @@ SECRET_KEY = 'qchcq^z0ecmrz!f(q9wkbhasvw_4wmdi0v=a!!9k!4^e$^hf6s'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['vigilant-exodus-test.azurewebsites.net']
 
 
 # Application definition

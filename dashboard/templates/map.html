@@ -15,8 +15,9 @@
     window.mapCenter = {{ center | safe }};
     window.imagePath = '{% static "img/" %}';
   </script>
-  <script src="https://googlemaps.github.io/js-marker-clusterer/src/markerclusterer.js"></script>
-  <script src="{% static "js/app.js" %}?{% now 'u' %}"></script>
+  <!-- <script src="https://googlemaps.github.io/js-marker-clusterer/src/markerclusterer.js"></script> -->
+  <script src="{% static "js/markerclusterer.js" %}"></script>  
+  <script src="{% static "js/app.js" %}"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&libraries=visualization,places&callback=initMap"></script>
 
   <head>

@@ -1,5 +1,6 @@
 var hazards, campwindow, markerCluster;
 var addmarker, formwindow, messagewindow;
+var directionsDisplay;
 var map;
 
 function initMap() {
@@ -298,6 +299,22 @@ function initMap() {
         markerCluster = new MarkerClusterer(map, markers, {
           imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
         });
+        google.maps.event.addListener(markerCluster, 'clusterclick', function(cluster){
+          directionsDisplay.setMap(null);
+          var directionsService = new google.maps.DirectionsService();
+          directionsDisplay = new google.maps.DirectionsRenderer();
+          directionsDisplay.setMap(map);
+          var request = {
+            origin: origin,
+            destination: cluster.getCenter(),
+            travelMode: 'DRIVING'
+          };
+          directionsService.route(request, function(result, status) {
+            if (status == 'OK') {
+              directionsDisplay.setDirections(result);
+            }
+          });
+        });
       });
 
       const hazard_url = window.hazardsGeoJsonUrl + '?' + Object.keys(params).map((k) => k + '=' + params[k]).join('&');
@@ -310,7 +327,7 @@ function initMap() {
       });
     }, 100);
 
-    map.addListener('click', function (e) {
+    map.addListener('dblclick', function (e) {
       placeMarkerAndPanTo(e.latLng, map, hazards);
     });
     var script = document.createElement('script');
@@ -343,6 +360,11 @@ function initMap() {
       loadProperties();
     }
   });
+  // var centerControlDiv = document.createElement('div');
+  // var centerControl = new CenterControl(centerControlDiv, map);
+
+  // centerControlDiv.index = 1;
+  // map.controls[google.maps.ControlPosition.TOP_LEFT].push(centerControlDiv);
 }
 
 function eqfeed_callback(data) {
@@ -356,12 +378,12 @@ var ClickEventHandler = function (map, origin, marker, feature) {
   this.marker = marker;
   this.feature = feature;
   this.directionsService = new google.maps.DirectionsService;
-  this.directionsDisplay = new google.maps.DirectionsRenderer({
+  directionsDisplay = new google.maps.DirectionsRenderer({
     draggable: true,
     map: map,
     panel: document.getElementById('right-panel')
   });
-  this.directionsDisplay.addListener('directions_changed', function() {
+  directionsDisplay.addListener('directions_changed', function() {
     document.getElementById('right-panel').style.flexBasis = '25%';
     document.getElementById('map').style.flexBasis = '74%';
   });
@@ -398,7 +420,7 @@ ClickEventHandler.prototype.calculateAndDisplayRoute = function (latLng) {
     travelMode: 'DRIVING'
   }, function (response, status) {
     if (status === 'OK') {
-      me.directionsDisplay.setDirections(response);
+      directionsDisplay.setDirections(response);
     } else {
       window.alert('Directions request failed due to ' + status);
     }
@@ -557,3 +579,34 @@ function saveData(type) {
       .catch(error => console.error('Error:', error));
   }
 }
+// function CenterControl(controlDiv, map) {
+
+//   // Set CSS for the control border.
+//   var controlUI = document.createElement('div');
+//   controlUI.style.backgroundColor = '#fff';
+//   controlUI.style.border = '1px solid #fff';
+//   // controlUI.style.borderRadius = '3px';
+//   controlUI.style.boxShadow = '0 1px 4px rgba(0,0,0,.3)';
+//   controlUI.style.cursor = 'pointer';
+//   controlUI.style.marginTop = '11px';
+//   controlUI.style.textAlign = 'center';
+//   controlUI.title = 'Click to recenter the map';
+//   controlDiv.appendChild(controlUI);
+
+//   // Set CSS for the control interior.
+//   var controlText = document.createElement('div');
+//   controlText.style.color = 'rgb(25,25,25)';
+//   controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+//   controlText.style.fontSize = '16px';
+//   controlText.style.lineHeight = '38px';
+//   controlText.style.paddingLeft = '5px';
+//   controlText.style.paddingRight = '5px';
+//   controlText.innerHTML = 'Center Map';
+//   controlUI.appendChild(controlText);
+
+//   // Setup the click event listeners: simply set the map to Chicago.
+//   controlUI.addEventListener('click', function() {
+//     map.setCenter(chicago);
+//   });
+
+// }

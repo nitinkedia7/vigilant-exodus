@@ -1,0 +1,74 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vigilant Exodus</title>
+    <link rel="shortcut icon" type="image/png" href="{% static "favicon/map-marker.png" %}"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+        <a class="navbar-brand" href="#">Vigilant Exodus</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'camps_map' %}">Dashboard</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'checkin' %}">Check-In</a>
+                </li>
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'missingperson' %}">Find People</a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>
+    <div align="center" style="padding: 2%;">
+        <h2> Missing Person Registration</h2>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6" style="max-width: 50%">
+            <form method="post">
+                {% csrf_token %}
+
+                {% for field in person_form %}
+                <label>{{ field.label_tag }}</label>
+                <div> {{ field }}</div>
+                <br>
+                {% endfor %}
+                <div align="center  "><button class="btn btn-primary" type="submit">Submit</button></div>
+            </form>
+        </div>
+        <div class="col-md-3"></div>
+    </div>
+    <script>
+        $(document).ready(function () {
+
+            $("input").addClass("form-control");
+            $("select").addClass("form-control");
+            $("textarea").addClass("form-control");
+
+        });
+    </script>
+</body>
+
+</html>

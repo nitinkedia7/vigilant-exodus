@@ -13,7 +13,7 @@ class Command(BaseCommand):
     """
 
     def add_arguments(self, parser):
-        parser.add_argument("--num", action="store", dest="num", default=50, type=int,
+        parser.add_argument("--num", action="store", dest="num", default=10, type=int,
             help="Number of records to add - note that each record will use Google's reverse "
                  "geocoding API and Places API, counting towards up to 3 requests per record "
                  "against your daily quota.")
@@ -26,7 +26,7 @@ class Command(BaseCommand):
         client = googlemaps.Client(key=settings.GOOGLE_MAPS_API_SERVER_KEY)
         properties = []
         start_lat, start_lng = map(float, options["center"].split(","))
-        step = {"lat": 3.0, "lng": 5.0}
+        step = {"lat": 2.0, "lng": 4.0}
         seen = set()
         
         for i in range(options["num"] + 1, 1, -1):
@@ -59,12 +59,12 @@ class Command(BaseCommand):
             property.set_google_maps_fields(latlng=latlng)
             # # Set a random value for each of the range fields.
             for field in ("capacity", "food", "medicine", "water"):
-                setattr(property, field, random.uniform(0, 1001))
+                setattr(property, field, random.uniform(200, 1001))
             properties.append(property)
             print("Resolved %s" % address)
         
         if options["delete"]:
             print("Deleting %s old properties" % Camp.objects.count())
-            # Camp.objects.all().delete()
+            Camp.objects.all().delete()
         Camp.objects.bulk_create(properties)
         print("Inserted %s properties" % len(properties))

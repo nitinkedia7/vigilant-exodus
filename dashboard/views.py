@@ -9,8 +9,7 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import F
 from .models import Camp, Hazard, Person
-from .forms import RescueForm, HazardForm
-import json
+from .forms import RescueForm, HazardForm, PersonForm, MissingPersonForm
 
 def camps_geojson(request):
     """
@@ -147,4 +146,49 @@ def camps_map(request):
     }
 
     return render(request, "map.html", context)
-    
+
+def checkin(request):
+    person_form=PersonForm()
+    if request.method == 'POST':
+        person_form = PersonForm(request.POST)
+        if person_form.is_valid():
+            data = person_form.cleaned_data
+            # name= data['name']
+            phone = data['phone']
+            person = Person.objects.filter(phone=phone).count()
+            print(person)
+            if person is 0:
+                person_form.save(commit=True)
+            else :
+                person_info = Person.objects.get(phone=phone)
+
+                return render(request,'infopage.html',{'person_info':person_info,'bool':"true"})
+            person_info = "None"
+            return render(request, 'infopage.html', {'person_info': person_info, 'bool': "checkinonly"})
+
+        else :
+            return HttpResponse("Form invalid")
+    else :
+        return render(request,'checkin.html',{'person_form':person_form})
+
+def findmissingperson(request):
+    person_form=MissingPersonForm()
+    if request.method=="POST":
+        person_form=MissingPersonForm(request.POST)
+
+        if person_form.is_valid():
+            data = person_form.cleaned_data
+            phone = data['phone']
+            person = Person.objects.filter(phone=phone).count()
+            print("abcd",person)
+            if person is 0:
+                person_form.save(commit=True)
+                person_info = "None"
+                return render(request,'infopage.html',{'person_info':person_info,'bool':"missingperson"})
+            else :
+                person_info = Person.objects.get(phone=phone)
+                return render(request,'infopage.html',{'person_info':person_info,'bool':"false"})
+        else:
+            return HttpResponse("invalid form")
+    else:
+        return render(request,'missing.html',{'person_form':person_form})

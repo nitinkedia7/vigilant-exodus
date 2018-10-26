@@ -59,7 +59,6 @@ class Person(geomodels.Model):
     phone = models.CharField(null=True, max_length=32)
     emergencyName = models.CharField(null=True, max_length=32)
     emergencyPhone = models.CharField(null=True, max_length=32)
-    
     camp = models.ForeignKey(Camp, null=True, blank=True, on_delete=models.PROTECT)
     point = geomodels.PointField(srid=4326, null=True)
  

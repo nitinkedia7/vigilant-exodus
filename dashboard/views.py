@@ -192,3 +192,31 @@ def findmissingperson(request):
             return HttpResponse("invalid form")
     else:
         return render(request,'missing.html',{'person_form':person_form})
+
+# def cluster(request):
+#     query = """WITH clusters AS (
+#   SELECT
+#     point,
+#     ST_ClusterDBSCAN(point, eps := (30 / 11111.0), minpoints := 0) OVER() AS cluster_id
+#   FROM dashboard_person
+#   WHERE point IS NOT NULL
+# )
+# SELECT
+#   cluster.id,
+#   ST_AsText(ST_Centroid(cluster.geometry)) AS coordinate,
+#   ST_AsGeoJSON(cluster.geometry) AS geometry
+# FROM (
+#   SELECT
+#     cluster_id AS id,
+#     ST_ConvexHull(ST_Collect(point)) AS geometry
+#   FROM clusters
+#   GROUP BY cluster_id
+# ) AS cluster;
+# """
+#     cursor = connection.cursor()
+#     cursor.execute(query)
+#     print(cursor.fetchall())
+#     # print(cursor.fetchone())
+#     # print(GEOSGeometry(cursor.fetchall()[0][2]).get_coords())
+#     center = dict(zip(("lng", "lat"), GEOSGeometry(cursor.fetchall()[0][1]).coords))
+#     return HttpResponse(json.dumps(center), content_type="application/json")

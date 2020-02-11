@@ -1,7 +1,7 @@
 -i https://pypi.org/simple
 certifi==2018.10.15
 chardet==3.0.4
-django==2.1.2
+django==2.2.10
 geographiclib==1.49
 geopy==1.17.0
 googlemaps==3.0.2
